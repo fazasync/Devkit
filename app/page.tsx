@@ -1,69 +1,156 @@
-import Image from "next/image";
+"use client";
+
+import Link from "next/link";
+import { useMemo } from "react";
+import { Search, Sparkles, Star, Clock, Folder } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { EmptyState } from "@/components/shared/empty-state";
+import { ToolCard } from "@/components/shared/tool-card";
+import { useFavoritesStore } from "@/stores/favorites-store";
+import { useRecentlyUsedStore } from "@/stores/recently-used-store";
+import { useCommandPaletteStore } from "@/stores/command-palette-store";
+import { TOOLS, getToolById } from "@/config/tool-registry";
+import { CATEGORIES } from "@/config/categories";
 
 export default function Home() {
+  const favoriteIds = useFavoritesStore((state) => state.favoriteIds);
+  const recentIds = useRecentlyUsedStore((state) => state.recentIds);
+  const setOpen = useCommandPaletteStore((state) => state.setOpen);
+  const setQuery = useCommandPaletteStore((state) => state.setQuery);
+
+  const favoriteTools = useMemo(
+    () => favoriteIds.map((id) => getToolById(id)).filter(Boolean) as typeof TOOLS,
+    [favoriteIds],
+  );
+  const recentTools = useMemo(
+    () => recentIds.map((id) => getToolById(id)).filter(Boolean) as typeof TOOLS,
+    [recentIds],
+  );
+  const popularTools = useMemo(() => TOOLS.filter((tool) => tool.popular), []);
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 p-6">
+      <section className="flex flex-col gap-2">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+          Welcome to DevKit
+        </h1>
+        <p className="text-sm text-muted-foreground">
+          Your essential developer utilities, all in one workspace.
+        </p>
+      </section>
+
+      <section>
+        <div className="relative">
+          <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="search"
+            placeholder="Search developer tools..."
+            className="h-11 w-full rounded-lg border border-border bg-card pl-10 pr-4 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            onFocus={() => setOpen(true)}
+            onChange={(event) => {
+              setQuery(event.target.value);
+              setOpen(true);
+            }}
+            aria-label="Search developer tools"
+          />
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      <section className="grid gap-6 lg:grid-cols-2">
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Star className="size-4 text-muted-foreground" />
+              Favorite Tools
+            </CardTitle>
+            <CardDescription>Tools you have marked as favorites.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {favoriteTools.length === 0 ? (
+              <EmptyState
+                icon={Star}
+                title="No favorites yet"
+                description="Star a tool from its page to see it here."
+              />
+            ) : (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {favoriteTools.map((tool) => (
+                  <ToolCard key={tool.id} tool={tool} />
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base">
+              <Clock className="size-4 text-muted-foreground" />
+              Recently Used
+            </CardTitle>
+            <CardDescription>Tools you opened recently.</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {recentTools.length === 0 ? (
+              <EmptyState
+                icon={Clock}
+                title="No recent tools"
+                description="Open a tool to see it here."
+              />
+            ) : (
+              <div className="grid gap-3 sm:grid-cols-2">
+                {recentTools.map((tool) => (
+                  <ToolCard key={tool.id} tool={tool} />
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <h2 className="text-lg font-semibold text-foreground">Browse Categories</h2>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {CATEGORIES.map((category) => {
+            const Icon = category.icon;
+            const count = TOOLS.filter((tool) => tool.category === category.id).length;
+            return (
+              <Link
+                key={category.id}
+                href={`/tools?category=${category.id}`}
+                className="group flex items-start gap-3 rounded-lg border border-border bg-card p-4 transition-colors hover:bg-accent"
+              >
+                <div className="flex size-9 shrink-0 items-center justify-center rounded-md bg-muted text-muted-foreground transition-colors group-hover:text-foreground">
+                  <Icon className="size-4" aria-hidden="true" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <h3 className="text-sm font-medium text-card-foreground">
+                    {category.label}
+                  </h3>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {category.description}
+                  </p>
+                  <p className="mt-2 text-xs text-muted-foreground">{count} tools</p>
+                </div>
+                <Folder className="size-4 shrink-0 text-muted-foreground opacity-0 transition-opacity group-hover:opacity-100" aria-hidden="true" />
+              </Link>
+            );
+          })}
         </div>
-      </main>
+      </section>
+
+      <section className="flex flex-col gap-3">
+        <h2 className="flex items-center gap-2 text-lg font-semibold text-foreground">
+          <Sparkles className="size-4 text-muted-foreground" />
+          Popular Tools
+        </h2>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {popularTools.map((tool) => (
+            <ToolCard key={tool.id} tool={tool} />
+          ))}
+        </div>
+      </section>
     </div>
   );
 }
