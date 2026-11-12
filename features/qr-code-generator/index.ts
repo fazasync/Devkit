@@ -1,0 +1,1 @@
+export { QrCodeGenerator } from "./components/qr-code-generator";
