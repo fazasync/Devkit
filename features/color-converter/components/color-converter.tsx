@@ -5,9 +5,7 @@ import {
   parseColor,
   rgbToHex,
   rgbToHsl,
-  hslToRgb,
 } from "../lib/color";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CopyButton } from "@/components/shared/copy-button";
 

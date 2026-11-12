@@ -5,9 +5,6 @@ import { formatJson, minifyJson, validateJson } from "../lib/json";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { CopyButton } from "@/components/shared/copy-button";
-import { EmptyState } from "@/components/shared/empty-state";
-import { Construction } from "lucide-react";
-
 export function JsonFormatter() {
   const [input, setInput] = useState("");
   const [output, setOutput] = useState("");

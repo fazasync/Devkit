@@ -31,7 +31,6 @@ export function runRegex(
   const matches: RegexMatch[] = [];
   let guard = 0;
   let result: RegExpExecArray | null;
-  // eslint-disable-next-line no-cond-assign
   while ((result = regex.exec(text)) !== null) {
     matches.push({
       match: result[0],

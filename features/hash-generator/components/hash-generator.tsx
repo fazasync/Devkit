@@ -19,8 +19,6 @@ export function HashGenerator() {
   useEffect(() => {
     let cancelled = false;
     if (input.length === 0) {
-      setOutput("");
-      setError(null);
       return;
     }
     computeHash(input, algorithm)
@@ -46,6 +44,9 @@ export function HashGenerator() {
     setOutput("");
     setError(null);
   };
+
+  const displayOutput = input.length === 0 ? "" : output;
+  const displayError = input.length === 0 ? null : error;
 
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6">
@@ -93,23 +94,23 @@ export function HashGenerator() {
         </Button>
       </section>
 
-      {error ? (
+      {displayError ? (
         <div
           role="alert"
           className="rounded-md border border-destructive/40 bg-destructive/10 px-3 py-2 text-sm text-destructive"
         >
-          {error}
+          {displayError}
         </div>
       ) : null}
 
-      {output ? (
+      {displayOutput ? (
         <section className="flex flex-col gap-2">
           <label className="text-sm font-medium text-foreground">Output</label>
           <div className="flex items-center gap-2 rounded-md border border-border bg-card px-3 py-2">
             <code className="flex-1 break-all font-mono text-sm text-foreground">
-              {output}
+              {displayOutput}
             </code>
-            <CopyButton value={output} label="Copy" />
+            <CopyButton value={displayOutput} label="Copy" />
           </div>
         </section>
       ) : null}

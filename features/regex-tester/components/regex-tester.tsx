@@ -2,7 +2,6 @@
 
 import { useMemo, useState } from "react";
 import { runRegex, AVAILABLE_FLAGS } from "../lib/regex";
-import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 
