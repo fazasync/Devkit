@@ -13,7 +13,6 @@ import { useCommandPaletteStore } from "@/stores/command-palette-store";
 export function AppHeader() {
   const pathname = usePathname();
   const setOpen = useCommandPaletteStore((state) => state.setOpen);
-  const setQuery = useCommandPaletteStore((state) => state.setQuery);
 
   const crumbs = pathname
     .split("/")

@@ -1,6 +1,5 @@
 import {
   Braces,
-  FileJson,
   Minimize2,
   CheckCircle,
   FileCode,

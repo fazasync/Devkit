@@ -36,7 +36,7 @@ export function CommandPalette() {
 
   return (
     <CommandDialog open={open} onOpenChange={setOpen}>
-      <Command>
+      <Command shouldFilter={false}>
         <CommandInput
           placeholder="Search developer tools..."
           value={query}

@@ -7,6 +7,7 @@ import { EmptyState } from "@/components/shared/empty-state";
 import { ToolCard } from "@/components/shared/tool-card";
 import { CATEGORIES } from "@/config/categories";
 import { TOOLS, getToolsByCategory } from "@/config/tool-registry";
+import type { ToolCategory } from "@/types/tool";
 import { searchTools } from "@/lib/search";
 
 function ToolsContent() {
@@ -16,7 +17,7 @@ function ToolsContent() {
 
   const filtered = useMemo(() => {
     const base = categoryParam
-      ? getToolsByCategory(categoryParam as never)
+      ? getToolsByCategory(categoryParam as ToolCategory)
       : TOOLS;
     return searchTools(query, base);
   }, [categoryParam, query]);
